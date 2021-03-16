@@ -60,29 +60,52 @@ def convert_to_filetype_and_permission(file_mode)
 end
 
 # When there is l option
-def list_segments_l(current_dir_files)
-  total = 0
-  file_data = []
-  current_dir_files.each do |file|
-    file_details = File.stat(file)
-    file_mode = file_details.mode.to_s(8)
+# def list_segments_l(current_dir_files)
+#   total = 0
+#   file_data = []
+#   current_dir_files.each do |file|
+#     file_details = File.stat(file)
+#     file_mode = file_details.mode.to_s(8)
 
-    # Get the filetype and permission
-    filetype_and_permission = convert_to_filetype_and_permission(file_mode)
+#     # Get the filetype and permission
+#     filetype_and_permission = convert_to_filetype_and_permission(file_mode)
 
-    nlink = file_details.nlink
+#     nlink = file_details.nlink
 
-    username = Etc.getpwuid(file_details.uid).name
-    groupname = Etc.getgrgid(file_details.gid).name
+#     username = Etc.getpwuid(file_details.uid).name
+#     groupname = Etc.getgrgid(file_details.gid).name
 
-    bytesize = file_details.size
+#     bytesize = file_details.size
 
-    timestamp = file_details.mtime.strftime('%-m %e %H:%M')
+#     timestamp = file_details.mtime.strftime('%-m %e %H:%M')
 
-    total += file_details.blocks
+#     total += file_details.blocks
 
-    file_data << "#{filetype_and_permission} #{nlink} #{username} #{groupname} #{bytesize} #{timestamp} #{file}"
-  end
+#     file_data << "#{filetype_and_permission} #{nlink} #{username} #{groupname} #{bytesize} #{timestamp} #{file}"
+#   end
+
+  def list_segments_l(current_dir_files)
+    total = 0
+    file_data = current_dir_files.map do |file|
+      file_details = File.stat(file)
+      file_mode = file_details.mode.to_s(8)
+  
+      # Get the filetype and permission
+      filetype_and_permission = convert_to_filetype_and_permission(file_mode)
+  
+      nlink = file_details.nlink
+  
+      username = Etc.getpwuid(file_details.uid).name
+      groupname = Etc.getgrgid(file_details.gid).name
+  
+      bytesize = file_details.size
+  
+      timestamp = file_details.mtime.strftime('%-m %e %H:%M')
+  
+      total += file_details.blocks
+  
+      "#{filetype_and_permission} #{nlink} #{username} #{groupname} #{bytesize} #{timestamp} #{file}"
+    end
 
   puts "total #{total}"
   file_data.each do |x|
