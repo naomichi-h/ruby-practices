@@ -3,21 +3,14 @@
 
 require 'optparse'
 
+# 全体制御
 def main(options)
   if ARGV[0].nil?
     text = $stdin.read
-    print text.count("\n").to_s.rjust(8)
-    print text.split(/\s+/).size.to_s.rjust(8)
-    print "#{text.bytesize.to_s.rjust(8)}\n"
+    word_count_stdin(text)
   else
-
     files = ARGV
-
-    if options['l']
-      word_count_l(files)
-    else
-      word_count(files)
-    end
+    options['l'] ? word_count_l(files) : word_count(files)
   end
 end
 
@@ -65,6 +58,13 @@ def word_count_l(files)
 
   print total_lines.to_s.rjust(8)
   puts ' total'
+end
+
+# wcコマンド(標準入力)
+def word_count_stdin(text)
+  print text.count("\n").to_s.rjust(8)
+  print text.split(/\s+/).size.to_s.rjust(8)
+  print "#{text.bytesize.to_s.rjust(8)}\n"
 end
 
 options = ARGV.getopts('l')
