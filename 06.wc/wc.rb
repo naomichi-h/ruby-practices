@@ -7,7 +7,7 @@ require 'optparse'
 def main(options)
   if ARGV[0].nil?
     text = $stdin.read
-    word_count_stdin(text)
+    options['l'] ? word_count_stdin_l(text) : word_count_stdin(text)
   else
     files = ARGV
     options['l'] ? word_count_l(files) : word_count(files)
@@ -65,6 +65,11 @@ def word_count_stdin(text)
   print text.count("\n").to_s.rjust(8)
   print text.split(/\s+/).size.to_s.rjust(8)
   print "#{text.bytesize.to_s.rjust(8)}\n"
+end
+
+# wcコマンド(標準入力&lオプション)
+def word_count_stdin_l(text)
+  print "#{text.count("\n").to_s.rjust(8)}\n"
 end
 
 options = ARGV.getopts('l')
